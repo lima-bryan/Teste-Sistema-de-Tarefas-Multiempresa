@@ -24,6 +24,7 @@ class User extends Authenticatable
         'password',
         'phone',
         'role',
+        'company_id'
     ];
 
     /**
@@ -44,4 +45,21 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    //relaciomento das tabelas  
+    public function company()
+    {
+        return $this->belongsTo(Company::class); //(1,1)
+    }
+
+    public function tasks()
+    {
+        return $this->hasMany(Task::class); //(1,N)
+    }
+    
+    public function taskComments()
+    {
+        return $this->hasMany(TaskComment::class); // (1,N)
+    }
+
 }

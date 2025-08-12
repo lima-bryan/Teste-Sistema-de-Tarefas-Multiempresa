@@ -14,13 +14,13 @@ class UpdateUsers extends Migration
     public function up()
     {
         schema::table('users', function (Blueprint $table) {
-            $table -> string('phone') -> nullable();
-            $table -> renameColumn('name', 'first_name');
-            $table -> enum ('role',['admin', 'user', 'manager']) -> default('user'); // aqui fica os niveis de permissao (admin, manager e user)
+            $table->string('phone')->nullable();
+            $table->renameColumn('name', 'first_name');
+            $table->enum('role', ['admin', 'user', 'manager'])->default('user'); // aqui fica os niveis de permissao (admin, manager e user)
 
 
-            $table -> foreignId ('company_id') -> nullable() -> constrained()
-             -> onDelete('set null') -> onUpdate('cascade'); // relaciona a tabela users com a tabela companies
+            $table->foreignId('company_id')->nullable()->constrained()
+                ->onDelete('set null')->onUpdate('cascade'); // relaciona a tabela users com a tabela companies
 
         });
     }
@@ -31,7 +31,7 @@ class UpdateUsers extends Migration
      * @return void
      */
     public function down()
-    
+
     {
         Schema::table('users', function (Blueprint $table) {
             $table->dropForeign(['company_id']);
@@ -39,7 +39,6 @@ class UpdateUsers extends Migration
             $table->dropColumn('role');
             $table->dropColumn('phone');
             $table->renameColumn('first_name', 'name');
-
-    });
-}
+        });
+    }
 }

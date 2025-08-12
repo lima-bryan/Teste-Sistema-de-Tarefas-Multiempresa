@@ -15,12 +15,11 @@ class CreateTableTasksComments extends Migration
     {
         Schema::create('task_comments', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('task_id')->constrained()->onDelete('cascade') -> onUpdate ('cascade');
-            $table->foreignId('user_id')->constrained()->onDelete('cascade') -> onUpdate ('cascade');
+            $table->foreignId('task_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
             $table->text('comment');
             $table->timestamps();
         });
-        
     }
 
     /**
@@ -30,7 +29,6 @@ class CreateTableTasksComments extends Migration
      */
     public function down()
     {
-            Schema::dropIfExists('task_comments');
-
+        Schema::dropIfExists('task_comments');
     }
 }
