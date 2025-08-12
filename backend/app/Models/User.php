@@ -20,7 +20,7 @@ class User extends Authenticatable
     protected $fillable = [
         'first_name',
         'last_name',
-        'email' ,
+        'email',
         'password',
         'phone',
         'role',
@@ -56,10 +56,17 @@ class User extends Authenticatable
     {
         return $this->hasMany(Task::class); //(1,N)
     }
-    
+
     public function taskComments()
     {
         return $this->hasMany(TaskComment::class); // (1,N)
     }
 
+    //mutator para criptografar a senha antes de salvar no banco de dados
+    public function setPasswordAttribute($value)
+    {
+        if ($value) {
+            $this->attributes['password'] = bcrypt($value);
+        }
+    }
 }
