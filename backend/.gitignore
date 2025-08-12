@@ -1,0 +1,53 @@
+# Diretórios de dependências
+/vendor
+/node_modules
+
+# Arquivos de ambiente
+.env
+.env.*.backup
+.env.backup
+.env.local
+.env.production
+.env.staging
+.env.testing
+
+# Chaves privadas
+/storage/*.key
+
+# Arquivos e pastas gerados automaticamente
+/public/hot
+/public/storage
+/storage/framework/*
+/storage/logs/*
+/bootstrap/cache/*
+
+# Arquivos de debug/teste
+.phpunit.result.cache
+phpunit.xml
+phpunit.xml.dist
+
+# Configurações de IDEs
+/.idea
+/.vscode
+*.code-workspace
+
+# Arquivos de sistema
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+pnpm-debug.log
+
+# Docker
+#docker-compose.override.yml
+
+# Homestead
+Homestead.json
+Homestead.yaml
+
+# Outras pastas de cache opcionais
+/.php-cs-fixer.cache
