@@ -17,7 +17,7 @@ class CreateTableTasksComments extends Migration
             $table->id();
             $table->foreignId('task_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
             $table->foreignId('user_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
-            $table->text('comment');
+            $table->text('comment') -> nullable();
             $table->timestamps();
         });
     }
