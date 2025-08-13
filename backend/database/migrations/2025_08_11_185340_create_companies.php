@@ -13,12 +13,14 @@ class CreateCompanies extends Migration
      */
     public function up()
     {
-        Schema::create('compaines', function (Blueprint $table) { //mudei o nome da tabela na migration lá embaixo
+        Schema::create('companies', function (Blueprint $table) { //mudei o nome da tabela na migration lá embaixo
             $table->id();
-            $table->string('name') -> unique();
-            $table->string('email');
-            $table->string('phone');
-            $table->text('address');
+            
+            $table->string('name',20) -> unique();
+            $table->string('email', 100);
+            $table->string('phone', 20);
+            $table->text('address',100);
+
             $table->timestamps();
         });
     }
@@ -30,6 +32,6 @@ class CreateCompanies extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('compaines');
+        Schema::dropIfExists('companies');
     }
 }

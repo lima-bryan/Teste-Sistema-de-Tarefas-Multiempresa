@@ -15,12 +15,21 @@ class CreateUsersTable extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->foreignId('company_id')->constrained()->onDelete('restrict')->onUpdate('cascade'); // relaciona a tabela users com a tabela companies
+            
+            $table->string('first_name', 20);
+            $table->string('last_name', 50);
+            $table->string('phone', 20);
             $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->enum('role', ['admin', 'user', 'manager'])->default('user'); // aqui fica os niveis de permissao (admin, manager e user)
+           
+            $table->timestamp('email_verified_at')->nullable();
+           
             $table->rememberToken();
             $table->timestamps();
+
+            
         });
     }
 
