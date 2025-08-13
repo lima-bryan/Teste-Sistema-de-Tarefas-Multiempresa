@@ -19,11 +19,11 @@ class CreateTasksTable extends Migration
             $table -> foreignId ('user_id') -> constrained() -> onDelete('cascade') -> onUpdate('cascade');
 
             $table -> string('title', 100);
-            $table -> text('description', 150) -> nullable();
-            $table -> enum ('status', ['pending', 'in_progress', 'completed', 'cancelled']) -> default('pending');
-            $table -> string('priority') -> default('low'); // aqui fica os niveis de prioridade (low, medium e high) das tasks
-            
-            $table -> dateTime('due_date') -> nullable();
+            $table -> text('description') -> nullable();
+            $table -> enum ('status', ['pendente', 'em andamento', 'concluída' ,'cancelada']) -> default('pendente');
+            $table -> enum('priority', ['baixa', 'média', 'alta'])-> default('baixa'); 
+
+            $table -> dateTime('due_date');
             $table -> dateTime('completed_at') -> nullable();
             $table -> dateTime('cancelled_at') -> nullable();
             
