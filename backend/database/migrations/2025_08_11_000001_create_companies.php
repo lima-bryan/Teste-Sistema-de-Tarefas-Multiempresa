@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateCompanies extends Migration
 {
+   
     /**
      * Run the migrations.
      *
@@ -22,8 +23,8 @@ class CreateCompanies extends Migration
             $table->string('address', 100);
 
             $table->timestamps();
-        });
-    }
+        });  
+       }
 
     /**
      * Reverse the migrations.

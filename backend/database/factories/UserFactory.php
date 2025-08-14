@@ -24,7 +24,7 @@ class UserFactory extends Factory
     public function definition()
     {
         return [
-            'company_id' => Company::factory(), //associar o usuario a uma empresa (factory relationships)
+            'company_id' => Company::inRandomOrder()->first()->id, //associar o usuario a uma empresa (factory relationships)
             'first_name' => $this->faker->firstName,
             'last_name' => $this->faker->lastName,
             'phone' => $this->faker->phoneNumber, 
