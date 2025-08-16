@@ -16,13 +16,13 @@ class User extends Authenticatable implements JWTSubject
      *
      * @var array<int, string>
      */
+
     protected $fillable = [
         'first_name',
         'last_name',
         'phone',
         'email',
         'password',
-        'role',
         'company_id'
     ];
 
@@ -70,13 +70,5 @@ class User extends Authenticatable implements JWTSubject
     public function taskComments()
     {
         return $this->hasMany(TaskComment::class); // (1,N)
-    }
-
-    //mutator para criptografar a senha antes de salvar no banco de dados
-    public function setPasswordAttribute($value)
-    {
-        if ($value) {
-            $this->attributes['password'] = bcrypt($value);
-        }
     }
 }

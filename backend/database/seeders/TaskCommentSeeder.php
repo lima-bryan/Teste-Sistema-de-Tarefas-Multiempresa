@@ -17,6 +17,6 @@ class TaskCommentSeeder extends Seeder
      */
     public function run()
     {
-        TaskComment::factory()->count(10)->create();
+        TaskComment::factory()->count(20)->create();
     }
 }
