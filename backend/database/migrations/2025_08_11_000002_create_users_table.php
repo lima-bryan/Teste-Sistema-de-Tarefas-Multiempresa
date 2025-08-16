@@ -23,8 +23,6 @@ class CreateUsersTable extends Migration
             $table->string('phone', 20);
             $table->string('email')->unique();
             $table->string('password');
-            $table->enum('role', ['admin', 'user', 'manager'])->default('user'); // aqui fica os niveis de permissao (admin, manager e user)
-           
             $table->timestamp('email_verified_at')->nullable();
            
             $table->rememberToken();
