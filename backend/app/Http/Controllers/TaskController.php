@@ -16,12 +16,14 @@ class TaskController extends Controller
      */
     public function index()
     {
-        $user = Auth::user();
+        /*  Pra testar
+         $user = Auth::user();
+         $tasks = Task::where('company_id', $user->company_id)->get();
+         return response()->json($tasks);
+         */
 
-        //Filtra as tarefas para que apenas as da empresa do usuario sejam retornada
-        $tasks = Task::where('company_id', $user->company_id)->get();
-
-        return response()->json($tasks);
+        // Retorna apenas as tarefas q pertecem ao usuario logado
+        return Task::where('company_id', Auth::user()->company_id)->get();
     }
 
     /**
@@ -32,7 +34,17 @@ class TaskController extends Controller
      */
     public function store(Request $request)
     {
+        // ligar a nova task do usuario logado a empresa dele
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'status' => 'required|in:pending,completed',
+            'due_date' => 'nullable|date',
+        ]);
         //
+        $validated['company_id'] = Auth::user()->company_id;
+        $task = Task::create($validated);
+        return response()->json($task, 201);
     }
 
     /**
@@ -41,9 +53,15 @@ class TaskController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Task $task)
     {
-        //
+        //Mostrar as tarefas do usuario logado
+
+        if($task->company_id !==Auth::user()->company_id){
+            return response()->json(['AVISO' => 'Você não tem permissão para ver esta tarefa'], 403);
+        } else {
+            return response()->json($task);
+        }
     }
 
     /**
@@ -53,9 +71,22 @@ class TaskController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Task $task)
     {
         //
+        if ($task->company_id !== Auth::user()->company_id){
+            return response()->json(['AVISO' => 'Você não tem permissão para atualizar esta tarefa'], 403);
+        }
+        $validated = $request->validate([
+            'title' => 'sometimes|string|max:255',
+            'description' => 'nullable|string',
+            'status' => 'sometimes|in:pending, in_progress,completed,canceled',
+            'priority' => 'sometimes||in:low,medium,high',
+            'due_date' => 'nullable|date',
+        ]);
+         $task ->update($validated);
+         return response()->json([ 'AVISO' => 'Tarefa atualizada com sucesso!',
+            'task' => $task], 200);
     }
 
     /**
@@ -64,8 +95,12 @@ class TaskController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Task $task)
     {
-        //
+        if($task->company_id !== Auth::user()->company_id){
+            return response()->json(['AVISO' => 'Você não tem permissão para excluir esta tarefa'], 403);
+        }
+        $task->delete();
+        return response()->json(['AVISO' => 'Tarefa excluída com sucesso!'], 200);
     }
 }
