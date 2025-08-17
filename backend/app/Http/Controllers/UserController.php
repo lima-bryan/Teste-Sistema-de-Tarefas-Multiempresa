@@ -58,10 +58,10 @@ class UserController extends Controller
     {
         if ($user->company_id !== Auth::user()->company_id) {
             return response()->json(['AVISO' => 'Usuário não encontrado.'], 404);
-        }
-
-        return $user;
-    }
+        } else{
+            return $user;
+        }  
+    } 
 
     /**
      * Update the specified resource in storage.
@@ -80,7 +80,7 @@ class UserController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:50',
             'email' => ['sometimes', 'email', Rule::unique('users')->ignore($user->id)],
-            'password' => 'nullable string min:8 confirmado',
+            'password' => 'nullable string min:8 confirmed',
         ]);  //valida os dados do usuario
 
         if ($request->filled('password')) {
