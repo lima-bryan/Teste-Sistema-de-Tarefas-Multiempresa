@@ -20,7 +20,7 @@ class TaskFactory extends Factory
     public function definition()
     {
         //variavel de status que vai receber um status aleatorio e para preencher o completed_at e cancelled_at
-        $status = $this->faker->randomElement(['pendente', 'em andamento', 'concluída', 'cancelada']);
+        $status = $this->faker->randomElement(['pending', 'in_progress', 'completed', 'canceled']);
 
         return [
             'user_id' => User::all()->random()->id, // a mesma coisa q a task de cima, associar...
@@ -30,8 +30,8 @@ class TaskFactory extends Factory
             
             'description' => $this->faker->paragraph,
 
-            'status' => $this->faker->randomElement(['pendente', 'em andamento', 'concluída', 'cancelada']),
-            'priority' => $this->faker->randomElement(['baixa', 'média', 'alta']),
+            'status' => $this->faker->randomElement(['pending', 'in_progress', 'completed', 'canceled']),
+            'priority' => $this->faker->randomElement(['low', 'medium', 'high']),
             
             'due_date' => now(),
             'completed_at' =>  $status === 'concluida' ? now() : null, // só vai preencher se o status for concluída
