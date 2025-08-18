@@ -30,9 +30,7 @@ class AuthController extends Controller
             'user' => $user,  //aqui estao os dados do usuario autenticado, nome e etc, por isso n preciso  pegas as ouras informaççoes, telefone e etc o laravel já faz isso
             'company_id' => $user->company_id, //aqui eu pego id da empresa do user autenticado (é importante para o front)
             'type' => 'bearer',
-
             'token' => $token, //retornando o token
-
             'AVISO' => 'Login realizado com sucesso!',
         ]);
     }
