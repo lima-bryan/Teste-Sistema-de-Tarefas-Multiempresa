@@ -85,8 +85,7 @@ class TaskController extends Controller
             'due_date' => 'nullable|date',
         ]);
          $task ->update($validated);
-         return response()->json([ 'AVISO' => 'Tarefa atualizada com sucesso!',
-            'task' => $task], 200);
+         return response()->json([ 'AVISO' => 'Tarefa atualizada com sucesso!', 'task' => $task], 200);
     }
 
     /**
