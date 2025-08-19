@@ -34,17 +34,21 @@ class TaskController extends Controller
      */
     public function store(Request $request)
     {
-        // ligar a nova task do usuario logado a empresa dele
+        // Valida os dados da requisição
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'status' => 'required|in:pending,completed',
+            'status' => 'required|in:pending,in progress,completed,canceled',
+            'priority' => 'required|in:low,medium,high',
             'due_date' => 'nullable|date',
         ]);
-        //
-        $validated['company_id'] = Auth::user()->company_id;
+        
+        // Adiciona o user_id e company_id do usuário logado
+        $validated['user_id'] = Auth::user()->id;
+        $validated['company_id'] = Auth::user()->company_id; //
+
         $task = Task::create($validated);
-        return response()->json($task, 201);
+        return response()->json(['AVISO' => 'Nova tarefa criada com Sucesso!', 'task' => $task], 201);
     }
 
     /**
@@ -80,7 +84,7 @@ class TaskController extends Controller
         $validated = $request->validate([
             'title' => 'sometimes|string|max:255',
             'description' => 'nullable|string',
-            'status' => 'sometimes|in:pending, in_progress,completed,canceled',
+            'status' => 'sometimes|in:pending, in progress,completed,canceled',
             'priority' => 'sometimes||in:low,medium,high',
             'due_date' => 'nullable|date',
         ]);
