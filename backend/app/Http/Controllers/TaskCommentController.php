@@ -31,31 +31,23 @@ class TaskCommentController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, Task $task)
     {
-        // pega o usuário autenticado
-        $validated = $request->validate([
-            'task_id' => 'required|exists:tasks,id',
-            'comment' => 'required|string',
-        ]);
+      $user = Auth::user();
+      $validated = $request->validate (['comment'=>'required|string',]); //validar o comentario
 
-        $task = Task::find($validated['task_id']); // busca a task
-
-        // verifica se a task existe e se pertence à mesma empresa
-        if (!$task || $task->company_id !== Auth::user()->company_id) {
-            return response()->json([
-                'AVISO' => 'Você não pode comentar em uma tarefa que não pertence à sua empresa.'
-            ], 403);
+    if ($task->company_id !== $user->company_id) {
+            return response()->json([ 'AVISO' => 'Você não pode comentar em uma tarefa que não pertence a sua Empresa.'], 403);
         }
-        //Pra criar o comentario
-        $comment = new TaskComment();
-        $comment->task_id = $validated['task_id'];
-        $comment->user_id = Auth::user()->id;
-        $comment->comment = $validated['comment']; // aqui usa o mesmo nome que validou
-        $comment->save();
-
-        return response()->json(['AVISO'  => 'Comentário criado com sucesso', 'comment' => $comment], 201);
-    }
+         // 
+         $comment = new TaskComment();
+         $comment->task_id = $task->id; 
+         $comment->user_id = $user->id;
+         $comment->comment = $validated['comment']; 
+         $comment->save();
+ 
+         return response()->json(['AVISO' => 'Comentário criado com Sucesso!', 'comment' => $comment], 201);
+     }
 
 
     /**
