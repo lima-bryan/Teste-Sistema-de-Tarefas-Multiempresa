@@ -73,10 +73,10 @@ Route::get('/task-comment', function (){
     } else {
         return response ()->json (['AVISO' => 'Nenhum comentário encontrado!'], 404);
     }
-});
+}); 
 
 
-*/ 
+*/
 
 
 // Rota de login pública - view (endpoint)
@@ -87,6 +87,9 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/user', function (Request $request) {
         return $request->user();
     });
+
+    //Rota para criar um comentario dentro da tarefa
+    Route::post('/tasks/{task}/comments', [TaskCommentController::class, 'store']);
 
     //Route de recursos API (API Resource )  - CRUD
     Route::apiResource('companies', CompanyController::class); 
