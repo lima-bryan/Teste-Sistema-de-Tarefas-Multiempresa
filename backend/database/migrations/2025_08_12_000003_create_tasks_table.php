@@ -21,7 +21,7 @@ class CreateTasksTable extends Migration
 
             $table -> string('title', 100);
             $table -> text('description') -> nullable();
-            $table -> enum ('status', ['pending', 'in_progress', 'completed' ,'canceled']) -> default('pending');
+            $table -> enum ('status', ['pending', 'in progress', 'completed' ,'canceled']) -> default('pending');
             $table -> enum('priority', ['low', 'medium', 'high'])-> default('low'); 
 
             $table -> dateTime('due_date');
