@@ -6,6 +6,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Task;
 use Illuminate\Support\Facades\Auth;
+use App\Mail\TaskNotificationMail;
+use App\Models\User;
+use Illuminate\Support\Facades\Mail;
 
 class TaskController extends Controller
 {
@@ -42,12 +45,20 @@ class TaskController extends Controller
             'priority' => 'required|in:low,medium,high',
             'due_date' => 'nullable|date',
         ]);
-        
+
         // Adiciona o user_id e company_id do usuário logado
         $validated['user_id'] = Auth::user()->id;
-        $validated['company_id'] = Auth::user()->company_id; //
+        $validated['company_id'] = Auth::user()->company_id;
 
         $task = Task::create($validated);
+
+        //Enviar email para todos
+        $user = User::where('company_id', Auth::user()->company_id)->get();
+        foreach ($user as $user) {
+            Mail::to($user->email)->send(
+                new TaskNotificationMail($task, 'Uma nova tarefa criada!'));
+        }
+
         return response()->json(['AVISO' => 'Nova tarefa criada com Sucesso!', 'task' => $task], 201);
     }
 
@@ -61,7 +72,7 @@ class TaskController extends Controller
     {
         //Mostrar as tarefas do usuario logado
 
-        if($task->company_id !==Auth::user()->company_id){
+        if ($task->company_id !== Auth::user()->company_id) {
             return response()->json(['AVISO' => 'Você não tem permissão para ver esta tarefa'], 403);
         } else {
             return response()->json($task);
@@ -78,7 +89,7 @@ class TaskController extends Controller
     public function update(Request $request, Task $task)
     {
         //
-        if ($task->company_id !== Auth::user()->company_id){
+        if ($task->company_id !== Auth::user()->company_id) {
             return response()->json(['AVISO' => 'Você não tem permissão para atualizar esta tarefa'], 403);
         }
         $validated = $request->validate([
@@ -88,8 +99,20 @@ class TaskController extends Controller
             'priority' => 'sometimes||in:low,medium,high',
             'due_date' => 'nullable|date',
         ]);
-         $task ->update($validated);
-         return response()->json([ 'AVISO' => 'Tarefa atualizada com sucesso!', 'task' => $task], 200);
+        $task->update($validated);
+        $task->refresh(); //forçar atualização do status da task
+
+        //Enviar email para todos se a tarefa for concluida
+        if ($task->status==='completed'){
+            $user = User::where('company_id', Auth::user()->company_id)->get();
+            foreach ($user as $user){
+                Mail::to($user->email)->send(new TaskNotificationMail($task, 'A tarefa foi concluída!'));
+
+            }
+        }
+
+
+        return response()->json(['AVISO' => 'Tarefa atualizada com sucesso!', 'task' => $task], 200);
     }
 
     /**
@@ -100,7 +123,7 @@ class TaskController extends Controller
      */
     public function destroy(Task $task)
     {
-        if($task->company_id !== Auth::user()->company_id){
+        if ($task->company_id !== Auth::user()->company_id) {
             return response()->json(['AVISO' => 'Você não tem permissão para excluir esta tarefa'], 403);
         }
         $task->delete();
