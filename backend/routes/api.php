@@ -16,6 +16,7 @@ use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\TaskCommentController;
+use App\Http\Controllers\RegisterController;
 
 
 
@@ -79,21 +80,26 @@ Route::get('/task-comment', function (){
 */
 
 
-// Rota de login pública - view (endpoint)
-Route::post('/login', [AuthController::class, 'login']);
+// Rotas de autenticação (não protegidas)
+Route::post('auth/login', [AuthController::class, 'login']);
+Route::post('/register', [RegisterController::class, 'store']);
 
-// middleware para autenticação de usuario (o front sabe quem ta logado por aqui)
+// Rotas protegidas (exigem autenticação JWT)
 Route::middleware('auth:api')->group(function () {
-    Route::get('/user', function (Request $request) {
+Route::post('auth/logout', [AuthController::class, 'logout']);
+// Rota para pegar a empresa do usuário autenticado
+Route::get('/my-company', [CompanyController::class, 'showUserCompany']);
+
+  
+    // Rota para pegar dados do usuário autenticado
+    Route::get('user', function (Request $request) {
         return $request->user();
     });
 
-    //Rota para criar um comentario dentro da tarefa
-    Route::post('/tasks/{task}/comments', [TaskCommentController::class, 'store']);
-
-    //Route de recursos API (API Resource )  - CRUD
-    Route::apiResource('companies', CompanyController::class); 
-    Route::apiResource('users', UserController::class); 
-    Route::apiResource('tasks', TaskController::class); 
-    Route::apiResource('task-comments', TaskCommentController::class);  
+    // Rotas de recursos API
+    Route::apiResource('companies', CompanyController::class);
+    Route::apiResource('users', UserController::class);
+    Route::apiResource('tasks', TaskController::class);
+    Route::apiResource('task-comments', TaskCommentController::class);
+  
 });
