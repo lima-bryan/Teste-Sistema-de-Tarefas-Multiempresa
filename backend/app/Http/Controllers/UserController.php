@@ -39,10 +39,11 @@ class UserController extends Controller
             'email' => 'required|email|unique:users', //valida o email se for unico
             'password' => 'required|string|min:8|confirmed' //valida a senha se for maior que 8 caracteres
         ]);
+        
         $validated['password'] = Hash::make($validated['password']); //criptografando a senha
         $validated['company_id'] = Auth::user()->company_id; //associa o usuario a empresa do usuario autenticado
         $user = User::create($validated);
-        return response()->json($user, 201);  //
+        return response()->json($user, 201); 
 
     }
 
@@ -78,7 +79,8 @@ class UserController extends Controller
         }
          //valida os dados do usuario
         $validated = $request->validate([
-            'name' => 'required|string|max:50',
+            'fitst_name' => 'required|string|max:50',
+            'last_name' => 'required|string|max:50',
             'email' => ['sometimes', 'email', Rule::unique('users')->ignore($user->id)],
             'password' => 'nullable string min:8 confirmed', ]); 
 
