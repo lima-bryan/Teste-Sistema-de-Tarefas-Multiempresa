@@ -77,6 +77,18 @@ class CompanyController extends Controller
         return response()->json(['AVISO' => 'Informações da Empresa atualizada com sucesso!', 'company' => $company], 200);
     }
 
+    public function showUserCompany()
+    {
+        // Pega o ID da empresa do usuário autenticado
+        $companyId = Auth::user()->company_id;
+
+        // Encontra a empresa ou falha com erro 404
+        $company = Company::findOrFail($companyId);
+        
+        return response()->json($company);
+    }
+
+
     /**
      * Remove the specified resource from storage.
      *
@@ -92,4 +104,3 @@ class CompanyController extends Controller
    */
 
 }
-
