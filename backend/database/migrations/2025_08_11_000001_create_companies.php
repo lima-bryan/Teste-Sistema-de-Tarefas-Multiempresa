@@ -18,9 +18,8 @@ class CreateCompanies extends Migration
             $table->id();
 
             $table->string('name', 100) -> unique();
-            $table->string('email', 100);
-            $table->string('phone', 20);
-            $table->string('address', 100);
+            $table->string('phone', 20) ->nullable();
+            $table->string('address', 100) ->nullable();
 
             $table->timestamps();
         });  
