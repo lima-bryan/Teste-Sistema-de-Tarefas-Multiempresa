@@ -17,7 +17,7 @@ class TaskController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Task $tasks)
     {
         /*  Pra testar
          $user = Auth::user();
@@ -26,7 +26,8 @@ class TaskController extends Controller
          */
 
         // Retorna apenas as tarefas q pertecem ao usuario logado
-        return Task::where('company_id', Auth::user()->company_id)->get();
+         $tasks=Task::where('company_id', Auth::user()->company_id)->paginate(10);
+         return response()->json($tasks, 200);
     }
 
     /**
@@ -95,7 +96,7 @@ class TaskController extends Controller
         $validated = $request->validate([
             'title' => 'sometimes|string|max:255',
             'description' => 'nullable|string',
-            'status' => 'sometimes|in:pending, in progress,completed,canceled',
+            'status' => 'sometimes|in:pending,in progress,completed,canceled',
             'priority' => 'sometimes||in:low,medium,high',
             'due_date' => 'nullable|date',
         ]);
