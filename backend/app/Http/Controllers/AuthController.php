@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
+use App\Models\Company;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Tymon\JWTAuth\JWTAuth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends Controller
 {
@@ -15,14 +19,14 @@ class AuthController extends Controller
 
 
         $token = auth('api')->attempt($credentials); // aqui tenta autenticar
- 
+
         /*                 IMPORTANTE!!
          SE TIVER UM MUTADOR NO MODELS DE USER NA HORA DO TESTE VAI SEMPRE PARAR NO IF PQ O MUTADOR ALTERA A SENHA
         */
 
-         if (!$token) {
-        return response()->json(['AVISO' => 'Credenciais inválidas'], 401);
-    }
+        if (!$token) {
+            return response()->json(['AVISO' => 'Credenciais inválidas'], 401);
+        }
         //se funcionar em cima ele pega (la ele) o usuario autenticado aqui
         $user = Auth('api')->user();
 
@@ -34,4 +38,10 @@ class AuthController extends Controller
             'AVISO' => 'Login realizado com sucesso!',
         ]);
     }
+
+    public function logout()
+{
+    auth()->logout();
+    return response()->json(['AVISO' => 'Deslogado com sucesso!']);
+}
 }
