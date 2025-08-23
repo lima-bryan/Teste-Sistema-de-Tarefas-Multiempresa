@@ -2,8 +2,7 @@
   <div class="login-container">
     <div class="login-box">
       <h1>Login</h1>
-      <form @submit.prevent="handleLogin"> <!-- submi.prevent é um ouvinte de eventos do vue-->
-
+      <form @submit.prevent="handleLogin">
         <div class="form-group">
           <label for="email">E-mail</label>
           <input type="email" id="email" v-model="email" required>
@@ -12,9 +11,10 @@
         <div class="form-group">
           <label for="Password">Senha</label>
           <input type="password" id="password" v-model="password" required>
-          
-         
         </div>
+
+        <!-- Mensagem de erro que aparecerá para o usuário -->
+        <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
 
         <button type="submit" class="btn-submit">Entrar</button>
       </form>
@@ -22,7 +22,6 @@
     </div>
   </div>
 </template>
-
 
 <script>
 import axios from 'axios';
@@ -50,9 +49,7 @@ export default {
       const apiUrl = 'http://127.0.0.1:8000/api/auth/login';
 
       try {
-
         const response = await axios.post(apiUrl, credentials);
-
 
         const { token, user } = response.data;
         localStorage.setItem('user_token', token);
@@ -67,9 +64,11 @@ export default {
         // O bloco 'catch' é executado se a requisição falhar
         console.error('Erro no login:', error.response);
 
-        // Acessa a mensagem de erro específica da API, se disponível
-        if (error.response && error.response.data && error.response.data.message) {
-          this.errorMessage = error.response.data.message;
+        // Acessa a mensagem de erro específica da API, que é 'AVISO'
+        if (error.response && error.response.data && error.response.data.AVISO) {
+          this.errorMessage = error.response.data.AVISO;
+        } else if (error.response && error.response.data && error.response.data.message) {
+           this.errorMessage = error.response.data.message;
         } else {
           // Mensagem genérica para outros tipos de erro
           this.errorMessage = 'Erro ao tentar fazer login. Tente novamente.';
@@ -79,7 +78,6 @@ export default {
   },
 };
 </script>
-
 
 <style scoped>
 .login-container {
@@ -105,13 +103,11 @@ export default {
   text-align: center;
   font-size: 40px;
   color: var(--text-color);
-
 }
 
 .form-group {
   margin-bottom: 15px;
   text-align: left;
-
 }
 
 .form-group label {
@@ -126,7 +122,6 @@ export default {
   width: 100%;
   padding: 10px;
   border: 1px solid #C7C8C9;
-  ;
   border-radius: 8px;
   box-sizing: border-box;
 }
@@ -140,10 +135,8 @@ export default {
   position: relative;
   overflow: hidden;
   font-weight: bold;
-
   color: var(--btn-text-color);
   background-color: var(--btn-bg-color);
-
   transition: all 0.4s ease;
   cursor: pointer;
 }
