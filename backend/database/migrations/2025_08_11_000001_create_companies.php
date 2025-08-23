@@ -14,12 +14,12 @@ class CreateCompanies extends Migration
      */
     public function up()
     {
-        Schema::create('companies', function (Blueprint $table) { //mudei o nome da tabela na migration lá embaixo
+        Schema::create('companies', function (Blueprint $table) { 
             $table->id();
 
             $table->string('name', 100) -> unique();
             $table->string('phone', 20) ->nullable();
-            $table->string('address', 100) ->nullable();
+           
 
             $table->timestamps();
         });  
