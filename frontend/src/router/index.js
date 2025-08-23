@@ -1,27 +1,62 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+import Vue from "vue";
+import VueRouter from "vue-router";
+import LoginPage from "../views/LoginPage.vue";
+import RegisterPage from "../views/RegisterPage.vue";
+import TasksPage from "../views/TasksPage.vue";
 
-Vue.use(VueRouter)
+Vue.use(VueRouter);
 
 const routes = [
   {
-    path: '/',
-    name: 'home',
-    component: HomeView
+    path: "/login",
+    name: "LoginPage", 
+    component: LoginPage,
   },
   {
-    path: '/about',
-    name: 'about',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
-  }
-]
+    path: "/register",
+    name: "RegisterPage", 
+    component: RegisterPage,
+  },
+  {
+    path: "/tasks",
+    name: "TasksPage", 
+    component: TasksPage,
+    meta: {
+      requiresAuth: true,
+    },
+  },
+  //Rota coringa serve para lidar com rotas n encontradas
+  {
+    path: "*",
+    redirect: () => {
+      const loggedin = localStorage.getItem("user_token");
+      if (loggedin) {
+        return { name: "TasksPage" }; 
+      }
+      return { name: "LoginPage" }; 
+    },
+  },
+];
 
 const router = new VueRouter({
-  routes
-})
+  mode: "history",
+  base: process.env.BASE_URL,
+  routes,
+});
 
-export default router
+// Comentário para desabilitar o linter para esta linha
+// eslint-disable-next-line no-unused-vars
+router.beforeEach((to, from, next) => {
+  const loggedin = localStorage.getItem("user_token");
+  const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
+
+  if (requiresAuth && !loggedin) {
+    next({ name: "LoginPage" }); 
+  } else if (to.name === "LoginPage" && loggedin) { 
+    next({ name: "TasksPage" }); 
+  } else {
+    next();
+  }
+});
+
+export default router;
