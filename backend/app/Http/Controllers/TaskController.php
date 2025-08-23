@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
-
-use Illuminate\Http\Request;
 use App\Models\Task;
-use Illuminate\Support\Facades\Auth;
-use App\Mail\TaskNotificationMail;
 use App\Models\User;
+use Illuminate\Http\Request;
+use App\Mail\TaskNotificationMail;
+use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Validation\Rule;
 
 class TaskController extends Controller
 {
@@ -17,17 +17,18 @@ class TaskController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Task $tasks)
+    public function index()
     {
-        /*  Pra testar
-         $user = Auth::user();
-         $tasks = Task::where('company_id', $user->company_id)->get();
-         return response()->json($tasks);
-         */
+        // 🚨 MUDANÇA AQUI: Usando JWTAuth para autenticar o usuário
+        $user = JWTAuth::parseToken()->authenticate();
+        $user->load('company');
 
-        // Retorna apenas as tarefas q pertecem ao usuario logado
-         $tasks=Task::where('company_id', Auth::user()->company_id)->paginate(10);
-         return response()->json($tasks, 200);
+        $tasks = Task::where('company_id', $user->company_id)->paginate(10);
+
+        return response()->json([
+            'tasks' => $tasks,
+            'user' => $user
+        ], 200);
     }
 
     /**
@@ -38,6 +39,8 @@ class TaskController extends Controller
      */
     public function store(Request $request)
     {
+        $user = JWTAuth::parseToken()->authenticate();
+
         // Valida os dados da requisição
         $validated = $request->validate([
             'title' => 'required|string|max:255',
@@ -47,17 +50,18 @@ class TaskController extends Controller
             'due_date' => 'nullable|date',
         ]);
 
-        // Adiciona o user_id e company_id do usuário logado
-        $validated['user_id'] = Auth::user()->id;
-        $validated['company_id'] = Auth::user()->company_id;
+        // Verifica se o usuário pertence à mesma empresa da tarefa
+        $validated['user_id'] = $user->id;
+        $validated['company_id'] = $user->company_id;
 
         $task = Task::create($validated);
 
-        //Enviar email para todos
-        $user = User::where('company_id', Auth::user()->company_id)->get();
-        foreach ($user as $user) {
-            Mail::to($user->email)->send(
-                new TaskNotificationMail($task, 'Uma nova tarefa criada!'));
+        // Enviar email para todos os funcionários da empresa
+        $users = User::where('company_id', $user->company_id)->get();
+        foreach ($users as $u) {
+            Mail::to($u->email)->send(
+                new TaskNotificationMail($task, 'Uma nova tarefa criada!')
+            );
         }
 
         return response()->json(['AVISO' => 'Nova tarefa criada com Sucesso!', 'task' => $task], 201);
@@ -71,9 +75,9 @@ class TaskController extends Controller
      */
     public function show(Task $task)
     {
-        //Mostrar as tarefas do usuario logado
+        $user = JWTAuth::parseToken()->authenticate();
 
-        if ($task->company_id !== Auth::user()->company_id) {
+        if ($task->company_id !== $user->company_id) {
             return response()->json(['AVISO' => 'Você não tem permissão para ver esta tarefa'], 403);
         } else {
             return response()->json($task);
@@ -89,9 +93,10 @@ class TaskController extends Controller
      */
     public function update(Request $request, Task $task)
     {
-        //
-        if ($task->company_id !== Auth::user()->company_id) {
-            return response()->json(['AVISO' => 'Você não tem permissão para atualizar esta tarefa'], 403);
+        $user = JWTAuth::parseToken()->authenticate();
+
+        if ($task->company_id !== $user->company_id) {
+            return response()->json(['AVISO' => 'Você não tem permissão para atualizar esta tarefa.'], 403);
         }
         $validated = $request->validate([
             'title' => 'sometimes|string|max:255',
@@ -101,19 +106,17 @@ class TaskController extends Controller
             'due_date' => 'nullable|date',
         ]);
         $task->update($validated);
-        $task->refresh(); //forçar atualização do status da task
+        $task->refresh();
 
-        //Enviar email para todos se a tarefa for concluida
-        if ($task->status==='completed'){
-            $user = User::where('company_id', Auth::user()->company_id)->get();
-            foreach ($user as $user){
-                Mail::to($user->email)->send(new TaskNotificationMail($task, 'A tarefa foi concluída!'));
-
+        // Enviar email para todos se a tarefa for concluida
+        if ($task->status === 'completed') {
+            $users = User::where('company_id', $user->company_id)->get();
+            foreach ($users as $us) {
+                Mail::to($us->email)->send(new TaskNotificationMail($task, 'A tarefa foi concluída!'));
             }
         }
 
-
-        return response()->json(['AVISO' => 'Tarefa atualizada com sucesso!', 'task' => $task], 200);
+        return response()->json(['AVISO' => 'A Tarefa foi atualizada com sucesso!', 'task' => $task], 200);
     }
 
     /**
@@ -124,10 +127,11 @@ class TaskController extends Controller
      */
     public function destroy(Task $task)
     {
-        if ($task->company_id !== Auth::user()->company_id) {
+        $user = JWTAuth::parseToken()->authenticate();
+        if ($task->company_id !== $user->company_id) {
             return response()->json(['AVISO' => 'Você não tem permissão para excluir esta tarefa'], 403);
         }
         $task->delete();
-        return response()->json(['AVISO' => 'Tarefa excluída com sucesso!'], 200);
+        return response()->json(['AVISO' => 'A Tarefa foi excluída com sucesso!'], 200);
     }
 }
