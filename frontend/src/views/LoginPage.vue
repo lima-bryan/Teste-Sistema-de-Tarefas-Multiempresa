@@ -2,18 +2,24 @@
   <div class="login-container">
     <div class="login-box">
       <h1>Login</h1>
-      <form @submit.prevent="handleLogin">
+      <form @submit.prevent="handleLogin"> <!-- submi.prevent é um ouvinte de eventos do vue-->
         <div class="form-group">
           <label for="email">E-mail</label>
           <input type="email" id="email" v-model="email" required>
         </div>
 
-        <div class="form-group">
-          <label for="Password">Senha</label>
-          <input type="password" id="password" v-model="password" required>
+        <div class="form-group password-group">
+          <label for="password">Senha</label>
+          <div class="password-input-container">
+            <input :type="passwordVisible ? 'text' : 'password'" id="password" v-model="password" required>
+            <span @click="togglePasswordVisibility" class="toggle-password">
+              <i v-if="passwordVisible" class="fa-solid fa-eye"></i>
+              <i v-else class="fa-solid fa-eye-slash"></i>
+            </span>
+          </div>
         </div>
 
-        <!-- Mensagem de erro que aparecerá para o usuário -->
+        <!--msg de erro q aparece para o usuario-->
         <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
 
         <button type="submit" class="btn-submit">Entrar</button>
@@ -25,20 +31,19 @@
 
 <script>
 import axios from 'axios';
+
 export default {
   name: 'LoginPage',
   data() {
     return {
       email: '',
       password: '',
-      // Nome mais descritivo para a variável de erro
       errorMessage: '',
+      passwordVisible: false,  //para controlar a visibilidade da senha
     };
   },
   methods: {
-    // Usamos 'async' para poder usar 'await' dentro da função
     async handleLogin() {
-      // Limpa qualquer erro anterior
       this.errorMessage = '';
 
       const credentials = {
@@ -57,29 +62,31 @@ export default {
 
         console.log('Login bem-sucedido:', response.data);
 
-        // Redireciona para a página de tarefas
         this.$router.push('/tasks');
 
       } catch (error) {
-        // O bloco 'catch' é executado se a requisição falhar
         console.error('Erro no login:', error.response);
 
-        // Acessa a mensagem de erro específica da API, que é 'AVISO'
+        // Acessa a mensagem de erro específica da API, a de AVISO 
         if (error.response && error.response.data && error.response.data.AVISO) {
           this.errorMessage = error.response.data.AVISO;
         } else if (error.response && error.response.data && error.response.data.message) {
-           this.errorMessage = error.response.data.message;
+          this.errorMessage = error.response.data.message;
         } else {
-          // Mensagem genérica para outros tipos de erro
-          this.errorMessage = 'Erro ao tentar fazer login. Tente novamente.';
+          this.errorMessage = 'Erro ao tentar fazer login. Tente novamente.'; // Mensagem genérica para outros tipos de erro
         }
       }
+    },
+    // pra mostrar a senha 
+    togglePasswordVisibility() {
+      this.passwordVisible = !this.passwordVisible;
     },
   },
 };
 </script>
 
 <style scoped>
+/*login*/
 .login-container {
   display: flex;
   justify-content: center;
@@ -104,6 +111,31 @@ export default {
   font-size: 40px;
   color: var(--text-color);
 }
+
+.password-group,
+.password-input-container {
+  position: relative;
+}
+
+.password-input-container input {
+  padding-right: 40px;
+}
+
+.toggle-password {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #888;
+  font-size: 1.25rem;
+}
+
+.toggle-password:hover {
+  color: #333;
+}
+
+/*-----*/
 
 .form-group {
   margin-bottom: 15px;
