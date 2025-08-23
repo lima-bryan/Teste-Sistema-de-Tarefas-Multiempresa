@@ -1,0 +1,48 @@
+/*Tema Claro*/
+:root,
+:root[data-theme='light'] {
+   --primary-color: #0B0B0F;
+  --primary-bg-color: #f0f2f5;
+  --secondary-bg-color: #C7C8C9; 
+   --primary-border-color: #C7C8C9;
+  --secondary-border-color: #9A9A9C; 
+
+  --navbar-color: #FE5F55;
+  --login-bg-color: #fff;
+  --title-color: #0B0B0F;
+  --text-color: #28292E;
+  --icon-color: #56575A; 
+
+  /*Color butons*/
+  --btn-text-color: #f0f2f5;
+  --btn-bg-color: #2274A5;
+  --btn-bg2-color: #5a9cc2;
+  --btn-save: #30b109;
+  --btn-edit: #2980b9;
+  --btn-deleted: #fa3508;
+}
+
+/*Tema escuro*/
+:root[data-theme='dark'] {
+ 
+  --primary-color: #ebebeb;
+  --primary-bg-color: #111217;
+  --secondary-bg-color: #28292E;
+  --primary-border-color: #28292E;
+  --secondary-border-color: #56575A;
+
+  --navbar-color: #FE5F55;
+
+  --title-color: #F0F0F0;
+  --text-color: #9A9A9C;
+  --link-color: #9A9A9C;
+  --icon-color: #C7C8C9;
+
+
+   /*Color butons*/
+   --btn-save: #30b109;
+   --btn-edit: #2980b9;
+   --btn-deleted: #fa3508;
+} 
+
+
