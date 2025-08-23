@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Company;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class CompanyController extends Controller
 {
@@ -15,8 +15,8 @@ class CompanyController extends Controller
      */
     public function index()
     {
-        //
-        $user = Auth::user();
+        // Pega o usuário autenticado via JWT
+        $user = JWTAuth::parseToken()->authenticate();
         return response()->json(['company' => $user->company], 200); //retornar a empresa do usuario logado
     }
 
@@ -26,7 +26,7 @@ class CompanyController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-   
+    
      /*
      public function store(Request $request)
     {
@@ -42,8 +42,8 @@ class CompanyController extends Controller
      */
     public function show($id)
     {
-        //
-        $user= Auth::user();
+        // Pega o usuário autenticado via JWT
+        $user= JWTAuth::parseToken()->authenticate();
         $company = Company::find($id); //pra procurar a empressa pelo id dela
         if ($company && $company->id === $user->company_id) {
             return response()->json($company, 200); //retorna a empresa do usuario logado
@@ -61,7 +61,8 @@ class CompanyController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $user = Auth::user();
+        // Pega o usuário autenticado via JWT
+        $user = JWTAuth::parseToken()->authenticate();
         $company = Company::find($id);
         //obs1.: n existe uma regra de negocio pra atualizar o nome das empresas pois as empresas n tem adm ou cargos 
         if (!$company || $company->id !== $user->company_id) {
@@ -70,7 +71,7 @@ class CompanyController extends Controller
         
         //obs2.: por isso que aqui eu só permito atualizar o endereço e telefone da empresa
         $validated = $request->validate([ 
-            'address' => 'sometimes|string',
+            // 'address' => 'sometimes|string',
             'phone' => 'sometimes|string',]);
         
         $company->update($validated);
@@ -79,11 +80,11 @@ class CompanyController extends Controller
 
     public function showUserCompany()
     {
-        // Pega o ID da empresa do usuário autenticado
-        $companyId = Auth::user()->company_id;
+        // Pega o usuário autenticado via JWT
+        $user = JWTAuth::parseToken()->authenticate();
 
         // Encontra a empresa ou falha com erro 404
-        $company = Company::findOrFail($companyId);
+        $company = Company::findOrFail($user->company_id);
         
         return response()->json($company);
     }
@@ -96,11 +97,11 @@ class CompanyController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-   /*
-    public function destroy($id)
+    /*
+     public function destroy($id)
     {
-  //como n tem adm n precisater o destroy
+ //como n tem adm n precisater o destroy
     }
-   */
+    */
 
 }
