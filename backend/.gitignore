@@ -1,53 +1,64 @@
-# Diretórios de dependências
-/vendor
-/node_modules
-
-# Arquivos de ambiente
-.env
-.env.*.backup
-.env.backup
-.env.local
-.env.production
-.env.staging
-.env.testing
-
-# Chaves privadas
-/storage/*.key
-
-# Arquivos e pastas gerados automaticamente
-/public/hot
-/public/storage
-/storage/framework/*
-/storage/logs/*
-/bootstrap/cache/*
-
-# Arquivos de debug/teste
-.phpunit.result.cache
-phpunit.xml
-phpunit.xml.dist
-
-# Configurações de IDEs
-/.idea
-/.vscode
-*.code-workspace
-
-# Arquivos de sistema
+# Sistema operacional
 .DS_Store
 Thumbs.db
 
+# Diretórios de dependências
+node_modules/
+
+# Diretórios de build/output
+dist/
+build/
+coverage/
+out/
+.next/
+
+# Arquivos de ambiente
+.env
+.env.local
+.env.*.local
+.env.development.local
+.env.test.local
+.env.production.local
+
 # Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Diretórios e arquivos de IDEs/editores
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Arquivos temporários
 *.log
-npm-debug.log
-yarn-debug.log
-yarn-error.log
-pnpm-debug.log
+*.tmp
+*.temp
+*.zip
+*.rar
 
-# Docker
-#docker-compose.override.yml
+# Cache de ferramentas
+.cache/
+.husky/_/
+turbo/
 
-# Homestead
+# Diretórios e arquivos do Laravel (se estiver usando)
+/vendor
+.phpunit.result.cache
 Homestead.json
 Homestead.yaml
-
-# Outras pastas de cache opcionais
-/.php-cs-fixer.cache
+npm-debug.log
+.env.local
+.env.testing
+/storage/*.key
+/public/hot
+/public/storage
+/public/build
+/.fleet/
+/vendor/
+/vendor-local/
