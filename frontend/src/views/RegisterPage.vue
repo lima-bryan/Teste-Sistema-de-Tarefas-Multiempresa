@@ -31,7 +31,7 @@ export default {
    },
   data() {
     return {
-      formData: {   // dados iniciais do form
+      formData: {  
         first_name: '',
         last_name: '',
         company_name: '',
