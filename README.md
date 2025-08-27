@@ -7,6 +7,21 @@ email: desafiotecnico67@gmail.com <br>
 senha: des@fio123 <br>
 https://mailtrap.io/inboxes/3992733/messages
 
+Pra fazer login adm <br>
+adm1@teste.com<br>
+senha:123456<br>
+
+adm2@teste.com<br>
+senha:123456<br>
+
+Funcionario:<br>
+funcionario@teste.com <br>
+senha:123456 <br>
+
+Funcionario:<br>
+funcionario2@teste.com <br>
+senha:123456
+
 
 ---
 
