@@ -19,7 +19,7 @@
   </template>
 
 <script>
-// A lógica do script permanece a mesma
+
 import axios from 'axios';
 import RegisterFormComponent from '../components/RegisterFormComponent.vue';
 
@@ -83,7 +83,7 @@ export default {
 </script>
 
 <style scoped>
-/* O estilo deve ser copiado do seu código */
+
 .register-container {
   display: flex;
   justify-content: center;
