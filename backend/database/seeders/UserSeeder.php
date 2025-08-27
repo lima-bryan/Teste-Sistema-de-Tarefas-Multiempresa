@@ -6,6 +6,7 @@ use App\Models\User;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use App\Models\Company;
 
 
 class UserSeeder extends Seeder
@@ -17,26 +18,41 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
-          User::factory()->count(20)->create();
+        $company1 = Company::where('company_name', 'Empresa1')->first();
+        $company2 = Company::where('company_name', 'Empresa2')->first();
 
-        //usuario para teste
+      
         User::create([
-            'company_id' => 1,
-            'first_name' => 'Bryan',
-            'last_name' => 'Lima',
-            'email' => 'admin@email.com',
-            'phone' => '11999999999',
-            'password' => Hash::make('12345678'), //senha criptografada
-            'email_verified_at' => now(), //pra vereficar a data de verificação do email
+            'first_name' => 'Admin',
+            'last_name' => 'Teste',
+            'email' => 'adm1@teste.com',
+            'password' => Hash::make('123456'),
+            'role' => 'admin',
+            'company_id' => $company1->id,
         ]);
         User::create([
-            'company_id' => 1,
-            'first_name' => 'Marcos',
-            'last_name' => 'Lima',
-            'email' => 'admin2@email.com',
-            'phone' => '11999999999',
-            'password' => Hash::make('12345678'), //senha criptografada
-            'email_verified_at' => now(), //pra vereficar a data de verificação do email
+            'first_name' => 'Funcionario',
+            'last_name' => 'Teste',
+            'email' => 'funcionario@teste.com',
+            'password' => Hash::make('123456'),
+            'role' => 'employee',
+            'company_id' => $company1->id,
+        ]);
+        User::create([
+            'first_name' => 'Admin',
+            'last_name' => 'Exemplo',
+            'email' => 'adm2@teste.com',
+            'password' => Hash::make('123456'),
+            'role' => 'admin',
+            'company_id' => $company2->id,
+        ]);
+        User::create([
+            'first_name' => 'Funcionario',
+            'last_name' => 'Teste',
+            'email' => 'funcionario2@teste.com',
+            'password' => Hash::make('123456'),
+            'role' => 'employee',
+            'company_id' => $company2->id,
         ]);
     }
 }

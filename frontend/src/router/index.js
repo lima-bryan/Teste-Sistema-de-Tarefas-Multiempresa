@@ -3,37 +3,45 @@ import VueRouter from "vue-router";
 import LoginPage from "../views/LoginPage.vue";
 import RegisterPage from "../views/RegisterPage.vue";
 import TasksPage from "../views/TasksPage.vue";
+import RegisterAdminPage from "../views/RegisterAdminPage.vue";
+
 
 Vue.use(VueRouter);
 
 const routes = [
   {
     path: "/login",
-    name: "LoginPage", 
+    name: "LoginPage",
     component: LoginPage,
   },
   {
     path: "/register",
-    name: "RegisterPage", 
+    name: "RegisterPage",
     component: RegisterPage,
   },
   {
     path: "/tasks",
-    name: "TasksPage", 
+    name: "TasksPage",
     component: TasksPage,
     meta: {
       requiresAuth: true,
     },
   },
-  //Rota coringa serve para lidar com rotas n encontradas
+  {
+    path: "/register-admin",
+    name: "RegisterAdminPage",
+    component: RegisterAdminPage,
+  },
+
+  //rota coringa serve para lidar com rotas n encontradas
   {
     path: "*",
     redirect: () => {
       const loggedin = localStorage.getItem("user_token");
       if (loggedin) {
-        return { name: "TasksPage" }; 
+        return { name: "TasksPage" };
       }
-      return { name: "LoginPage" }; 
+      return { name: "LoginPage" };
     },
   },
 ];
@@ -49,11 +57,18 @@ const router = new VueRouter({
 router.beforeEach((to, from, next) => {
   const loggedin = localStorage.getItem("user_token");
   const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
+  const requiresAdmin = to.matched.some((record) => record.meta.requiresAdmin);
+  const user = JSON.parse(localStorage.getItem("user"));
 
+  //proteção de rotas para usuarios logados
   if (requiresAuth && !loggedin) {
-    next({ name: "LoginPage" }); 
-  } else if (to.name === "LoginPage" && loggedin) { 
-    next({ name: "TasksPage" }); 
+    return next({ name: "LoginPage" });
+    
+  } else if (requiresAdmin && (!user || user.role !== 'admin')){
+    return next({ name: "TasksPage" });
+
+  }else if (to.name === "LoginPage" && loggedin) {
+    next({ name: "TasksPage" });
   } else {
     next();
   }

@@ -5,13 +5,25 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-  },
-  getters: {
+    showTaskForm: false
   },
   mutations: {
+    toggleTaskForm(state) {
+      state.showTaskForm = !state.showTaskForm;
+    },
+    hideTaskForm(state) {
+      state.showTaskForm = false;
+    }
   },
   actions: {
+    toggleTaskForm({ commit }) {
+      commit('toggleTaskForm');
+    },
+    hideTaskForm({ commit }) {
+      commit('hideTaskForm');
+    }
   },
-  modules: {
+  getters: {
+    showTaskForm: state => state.showTaskForm
   }
-})
+});

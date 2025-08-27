@@ -1,8 +1,10 @@
 <template>
   <div class="login-container">
+    
+
     <div class="login-box">
       <h1>Login</h1>
-      <form @submit.prevent="handleLogin"> <!-- submi.prevent é um ouvinte de eventos do vue-->
+      <form @submit.prevent="handleLogin">
         <div class="form-group">
           <label for="email">E-mail</label>
           <input type="email" id="email" v-model="email" required>
@@ -19,10 +21,10 @@
           </div>
         </div>
 
-        <!--msg de erro q aparece para o usuario-->
         <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
 
         <button type="submit" class="btn-submit">Entrar</button>
+      
       </form>
       <p>Ainda não tem uma conta? <router-link to="/register">Cadastre-se aqui</router-link>.</p>
     </div>
@@ -39,7 +41,7 @@ export default {
       email: '',
       password: '',
       errorMessage: '',
-      passwordVisible: false,  //para controlar a visibilidade da senha
+      passwordVisible: false,
     };
   },
   methods: {
@@ -59,6 +61,7 @@ export default {
         const { token, user } = response.data;
         localStorage.setItem('user_token', token);
         localStorage.setItem('user', JSON.stringify(user));
+       
 
         console.log('Login bem-sucedido:', response.data);
 
@@ -67,17 +70,16 @@ export default {
       } catch (error) {
         console.error('Erro no login:', error.response);
 
-        // Acessa a mensagem de erro específica da API, a de AVISO 
         if (error.response && error.response.data && error.response.data.AVISO) {
           this.errorMessage = error.response.data.AVISO;
         } else if (error.response && error.response.data && error.response.data.message) {
           this.errorMessage = error.response.data.message;
         } else {
-          this.errorMessage = 'Erro ao tentar fazer login. Tente novamente.'; // Mensagem genérica para outros tipos de erro
+          this.errorMessage = 'Erro ao tentar fazer login. Tente novamente.';
         }
       }
     },
-    // pra mostrar a senha 
+    //pra mostrar a senha
     togglePasswordVisibility() {
       this.passwordVisible = !this.passwordVisible;
     },
@@ -86,13 +88,44 @@ export default {
 </script>
 
 <style scoped>
-/*login*/
+.header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 70px;
+  background-color: var(--header-bg-color, #f0f0f0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+}
+
+.create-company-link {
+  padding: 10px 20px;
+  background-color: #28a745;
+  color: white;
+  border-radius: 5px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+  display: inline-block;
+}
+
+.create-company-link:hover {
+  background-color: #218838;
+}
+
 .login-container {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
   background-color: var(--primary-bg-color);
+  position: relative;
+  padding-top: 80px;
+  box-sizing: border-box;
 }
 
 .login-box {
@@ -135,8 +168,6 @@ export default {
   color: #333;
 }
 
-/*-----*/
-
 .form-group {
   margin-bottom: 15px;
   text-align: left;
@@ -167,8 +198,8 @@ export default {
   position: relative;
   overflow: hidden;
   font-weight: bold;
-  color: var(--btn-text-color);
-  background-color: var(--btn-bg-color);
+  color: #fff;
+  background-color: #000;
   transition: all 0.4s ease;
   cursor: pointer;
 }

@@ -8,102 +8,53 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Tymon\JWTAuth\Facades\JWTAuth;
-use Illuminate\Validation\Rule;
-
 
 class RegisterController extends Controller
 {
     /**
-     * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
-     */
-    public function index() {}
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
      */
     public function store(Request $request)
     {
-        //
-        //validar todos os dados
-        $validator = validator::make(
-            $request->all(),
-            [
-                'first_name' => 'required|string|max:255',
-                'last_name' => 'required|string|max:255',
-                'email' => 'required|string|email|max:255|unique:users',
-                'password' => 'required|string|min:8|confirmed',
-                'phone' => 'required|string|max:20',
-                'company_name' => ['required', 'string', 'max:150', Rule::unique('companies', 'name')], //pra garantir que tenha apenas uma empresa por nome
-            ],
-        
 
-        );
-        if ($validator->fails()) {
-            return response()->json($validator->errors(), 422); //
-
-        }
-        //criar empresa
-        $company = Company::create([
-            'name' => $request->company_name,
-            'phone' => $request->phone,
-
-
+        $validator = Validator::make($request->all(), [
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:6|confirmed',
+            'company_name' => 'required|string|max:255',
         ]);
-        //criar usuario vinculado a empresa
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+        //procura e empresa e verifica se existe
+        $company = Company::where('company_name', $request->company_name)->first();
+        if (!$company) {
+            $response = [
+                'errors' => [
+                    'company_name' => ['Nome da empresa incorreto'],
+                ],
+            ];
+            return response()->json($response, 422);
+        }
         $user = User::create([
             'first_name' => $request->first_name,
             'last_name' => $request->last_name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'company_id' => $company->id,
+            'role' => 'employee', 
+        ]); 
 
-        ]);
         $token = JWTAuth::fromUser($user);
+        
         return response()->json([
             'user' => $user,
-            'company' => $company,
             'token' => $token,
-            'type' => 'bearer',
-            'AVISO' => 'Usuário e Empresa cadastrados com sucesso!',
+            'AVISO' => 'Usuário criado e vinculado a empresa ' . $company->company_name . ' com sucesso!',
         ], 201);
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
     }
 }

@@ -16,6 +16,14 @@ class CompanySeeder extends Seeder
      */
     public function run()
     {
-        Company::factory()->count(20)->create();
+        Company::create([
+            'company_name' => 'Empresa1',
+            'phone' => '5511987654321',
+        ]);
+
+        Company::create([
+            'company_name' => 'Empresa2',
+            'phone' => '5521912345678',
+        ]);
     }
 }

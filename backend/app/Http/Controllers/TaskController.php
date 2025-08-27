@@ -19,10 +19,8 @@ class TaskController extends Controller
      */
     public function index()
     {
-        // 🚨 MUDANÇA AQUI: Usando JWTAuth para autenticar o usuário
         $user = JWTAuth::parseToken()->authenticate();
         $user->load('company');
-
         $tasks = Task::where('company_id', $user->company_id)->paginate(10);
 
         return response()->json([
@@ -50,13 +48,13 @@ class TaskController extends Controller
             'due_date' => 'nullable|date',
         ]);
 
-        // Verifica se o usuário pertence à mesma empresa da tarefa
+        // Verifica se o usuário pertence a mesma empresa da tarefa
         $validated['user_id'] = $user->id;
         $validated['company_id'] = $user->company_id;
 
         $task = Task::create($validated);
 
-        // Enviar email para todos os funcionários da empresa
+        // Enviar email para todos os funcionários da empresa (será q precisa ser todos?)
         $users = User::where('company_id', $user->company_id)->get();
         foreach ($users as $u) {
             Mail::to($u->email)->send(

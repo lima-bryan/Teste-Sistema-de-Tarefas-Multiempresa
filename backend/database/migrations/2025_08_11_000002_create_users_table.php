@@ -16,13 +16,14 @@ class CreateUsersTable extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('company_id')->constrained()->onDelete('restrict')->onUpdate('cascade'); // relaciona a tabela users com a tabela companies
+            $table->foreignId('company_id')->constrained()->onDelete('restrict')->onUpdate('cascade');
             
             $table->string('first_name', 20);
             $table->string('last_name', 50);
             $table->string('phone', 20)->nullable();
             $table->string('email')->unique();
             $table->string('password');
+            $table->string('role')->default('employee');
             $table->timestamp('email_verified_at')->nullable();
            
             $table->rememberToken();
