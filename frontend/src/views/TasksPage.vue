@@ -172,7 +172,7 @@ export default {
 
     };
   },
-  // ✅ Posição correta da propriedade computada
+ 
   computed: {
     isUserAdmin() {
       const user = JSON.parse(localStorage.getItem('user'));
@@ -265,7 +265,7 @@ export default {
         await axios.post('http://127.0.0.1:8000/api/tasks', this.currentTask, this.getAuthHeaders());
         this.resetForm();
         this.fetchTasks();
-        this.$bvModal.show('confirm-creation-modal'); // ✅ Usando o ID do modal correto
+        this.$bvModal.show('confirm-creation-modal'); 
         this.showForm = false;
       } catch (error) {
         this.errorMessage = 'Erro ao criar a tarefa.';
@@ -494,7 +494,7 @@ h1 {
   background-color: #218838;
 } */
 
-/* NOVO: Estilos para as duas colunas */
+
 .tasks-container {
   display: flex;
   flex-direction: column;
@@ -523,7 +523,7 @@ h1 {
 
   .tasks-section {
     width: 48%;
-    /* Para dar espaço entre as colunas */
+   
   }
 }
 </style>
