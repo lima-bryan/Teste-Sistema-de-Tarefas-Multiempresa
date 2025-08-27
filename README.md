@@ -2,10 +2,9 @@
 
 Projeto de gerenciamento de tarefas multiempresa (multitenant) desenvolvido com **Laravel 8 (API com JWT)** no backend e **Vue.js 2** no frontend.
 
-Obs.: Criei um email para vocês verem a notificação das tarefas criada e concluidas no Mailtrap
-email: desafiotecnico67@gmail.com
-senha: des@fio123
-
+Obs.: Criei um email para vocês verem a notificação das tarefas criada e concluidas no Mailtrap <br>
+email: desafiotecnico67@gmail.com <br>
+senha: des@fio123 <br>
 https://mailtrap.io/inboxes/3992733/messages
 
 
