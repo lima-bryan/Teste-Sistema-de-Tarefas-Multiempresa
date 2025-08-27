@@ -27,7 +27,7 @@ export default {
 </script>
 
 <style>
-/* Estilos do Botão de tema */
+
 .theme-toggle-button {
   z-index: 999;
   position: fixed;
