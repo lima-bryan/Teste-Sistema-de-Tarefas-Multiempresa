@@ -52,6 +52,8 @@ Antes de rodar o projeto, instale:
    ```
 
    * Configure as variáveis de ambiente (banco, JWT\_SECRET, etc.)
+   * php artisan jwt:secret
+
 
 4. Gere a chave da aplicação e secret JWT:
 
