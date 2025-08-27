@@ -37,11 +37,11 @@
       }
     },
     methods: {
-      // ✨ NOVO: Emite um evento personalizado quando o botão OK é clicado
+     
       handleOk() {
         this.$emit('confirmed');
       },
-      // ✨ NOVO: Métodos para controlar o modal a partir do componente pai
+     
       show() {
         this.$bvModal.show(this.modalId);
       },
