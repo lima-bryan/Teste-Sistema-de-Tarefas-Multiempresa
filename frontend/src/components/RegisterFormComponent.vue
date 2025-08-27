@@ -1,6 +1,6 @@
 <template>
     <div>
-      <!-- ✨ Solução: Usamos um proxy (propriedade computada) para vincular diretamente aos dados do pai, evitando o loop infinito -->
+     
       <b-form-group label="Nome" label-for="first_name">
         <b-form-input id="first_name" v-model="userProxy.first_name" required></b-form-input>
       </b-form-group>
@@ -67,15 +67,14 @@
         default: false,
       }
     },
-    // ✨ Solução: Removemos o 'data()' e o 'watch' para evitar o loop.
-    // Usamos uma propriedade computada para o binding bidirecional.
+   
     computed: {
       userProxy: {
         get() {
           return this.value;
         },
         set(newValue) {
-          // Quando o valor muda, emitimos o evento 'input' para o componente pai.
+        
           this.$emit('input', newValue);
         }
       }
